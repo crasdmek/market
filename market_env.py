@@ -58,14 +58,20 @@ class Market(gym.Env):
         """
         info = {}
         
+        # Default Reward
+        reward = -1.0
+        
         # Set Negative Reward by Daily Loss Percentage * Days since start (data_index + 1)
-        reward = -1 * self.daily_loss_pct * (self.data_index + 1)
+        negative_reward = -1.0 * self.daily_loss_pct * (self.data_index + 1)
         
         # Initialize observations as empty array
         observations = np.empty(0)
         
         # Increment Data Index
         self.data_index += 1  
+        
+        # Info for Result
+        result = 'L'
                 
         if self.data_index <= len(self.data) - 1:
             close = float(self.data['Close'][self.data_index])
@@ -75,12 +81,21 @@ class Market(gym.Env):
             # If Gain is Greater Than Gain Target (End and Report Reward)
             if win_loss_pct >= self.win_loss_pct:
                 self.done = True
-                reward = win_loss_pct
+                self.returns = win_loss_pct
+                reward = 1000.0
+                result = 'W'
                 
-            # If Gain is Less Than Loss Target (End and Report Reward)
+            # If Loss is Less Than Loss Target (End and Report Reward)
             elif win_loss_pct <= -1 * self.win_loss_pct:
                 self.done = True
-                reward = win_loss_pct
+                self.returns = win_loss_pct
+                reward = -1000.0
+                
+            # If Negative Reward is Less than Loss Target (End and Report Reward)
+            elif negative_reward <= -1 * self.win_loss_pct:
+                self.done = True
+                self.returns = negative_reward
+                reward = -1000.0
                 
             # Handle Action
             elif self.actions[action] == 'LONG':
@@ -123,7 +138,7 @@ class Market(gym.Env):
             
             observations = np.array(observations)
             
-            info = {'Steps': self.data_index}
+            info = {'Steps': self.data_index, 'Return': self.returns, 'Result': result}
         else:
             self.done = True
             info = {'Steps': self.data_index}
@@ -144,6 +159,7 @@ class Market(gym.Env):
         self.cash = self.initial_cash
         self.contracts = 0
         self.daily_returns = np.array([])
+        self.returns = 0.00
         observation = np.ones(64)
         numdays = 500
         start = dt.date(1990, 2, 16)

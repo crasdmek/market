@@ -16,7 +16,7 @@ if __name__=="__main__":
     env = Market(initial_cash = 10000, 
              commission = 9.99, 
              win_loss_pct = .12,
-             daily_loss_pct = .05/252)
+             daily_loss_pct = .24/252)
              
     ''' Retrieve State and Action Space from Environment '''
     num_states = env.observation_space.n
@@ -33,7 +33,7 @@ if __name__=="__main__":
         dyna = 0, \
         verbose=False)
         
-    batch_cnt = 25
+    batch_cnt = 1000
         
     for batch in range(batch_cnt):
             
@@ -42,11 +42,11 @@ if __name__=="__main__":
         Q = []
         
         # Counter for Wins and Losses
-        wins = 0.0
-        losses = 0.0
+        wins = 0
+        losses = 0
         
         ''' Iterate through X Episodes to Train Learner '''
-        for episode in range(100):  
+        for episode in range(1000):  
             done = False
             s = env.reset()
             a = agent.querysetstate(s)
@@ -69,13 +69,13 @@ if __name__=="__main__":
             ''' Reset Agent '''
             agent.reset()
             
-            print "Batch: " + str(batch) + "\tEpisode: " + str(episode) + "\tReward = " + str(r)
+            print "Batch: " + str(batch) + "\tEpisode: " + str(episode) + "\tResult = " + str(info['Result']) + "\tSteps: " + str(info['Steps'])
             if r > 0: 
                 wins += 1
             else:
                 losses += 1
-                
-        print "Batch: " + str(batch) + " Win-Loss Ratio: " + str(wins/losses) + " Agent RAR: " + str(agent.rar)
+        
+        print "Batch: " + str(batch) + "\tWins: " + str(wins) + "\tLosses: " + str(losses) + "\tRAR: " + str(agent.rar)
             
                     
         ''' Convert to Numpy Arrays '''
