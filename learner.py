@@ -17,8 +17,8 @@ class QLearner(object):
         self.verbose = verbose
         self.num_actions = num_actions
         self.num_states = num_states
-        self.alpha = alpha #discount factor
-        self.gamma = gamma #learning rate
+        self.alpha = alpha #LEARNING RATE
+        self.gamma = gamma #DISCOUNT FACTOR
         self.rar = rar #random action rate
         self.radr = radr
         self.dyna = dyna        
@@ -38,7 +38,7 @@ class QLearner(object):
         if rand.random() < self.rar:
             action = rand.randint(0, self.num_actions-1)
         else:
-            action = np.argmax(self.q_model.predict([s_prime]))
+            action = np.argmax(self.q_model.predict([s_prime])[0])
         self.updateQ(s, action, s_prime, r)
         return action
         
@@ -46,9 +46,9 @@ class QLearner(object):
         #self.q[s,a] = (1 - self.alpha) * self.q[s,a] + self.alpha * (r + self.gamma * self.q[s_prime, np.argmax(self.q[s_prime, a_prime])])       
        
         q_sa = self.q_model.predict([s])[0][a]
-        max_q_s_prime = np.argmax(self.q_model.predict([s_prime]))
-        q_s_prime = self.q_model.predict([s_prime])[0][max_q_s_prime]
-        q = (1 - self.alpha) * q_sa + self.alpha * (r + self.gamma * q_s_prime)
+        max_q_s_prime = np.argmax(self.q_model.predict([s_prime])[0])
+        #q_s_prime = self.q_model.predict([s_prime])[0][max_q_s_prime]
+        q = q_sa + self.alpha * (r + self.gamma * max_q_s_prime - q_sa)
         
         # DEBUG
         if verbose: print str(q) + "\r\r"     

@@ -27,11 +27,14 @@ if __name__=="__main__":
         num_states,\
         num_actions, \
         alpha = 0.2, \
-        gamma = 0.9, \
+        gamma = 0.98, \
         rar = 0.98, \
         radr = 0.999, \
         dyna = 0, \
         verbose=False)
+    
+        # GAMMA = discount factor, higher tends toward longer term rewards
+        # ALPHA = learning rate, higher tends toward deterministic
         
     batch_cnt = 100
         
@@ -46,7 +49,7 @@ if __name__=="__main__":
         losses = 0
         
         ''' Iterate through X Episodes to Train Learner '''
-        for episode in range(500):  
+        for episode in range(100):  
             done = False
             s = env.reset()
             a = agent.querysetstate(s)
