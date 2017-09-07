@@ -33,7 +33,7 @@ if __name__=="__main__":
         dyna = 0, \
         verbose=False)
         
-    batch_cnt = 1000
+    batch_cnt = 100
         
     for batch in range(batch_cnt):
             
@@ -46,7 +46,7 @@ if __name__=="__main__":
         losses = 0
         
         ''' Iterate through X Episodes to Train Learner '''
-        for episode in range(1000):  
+        for episode in range(500):  
             done = False
             s = env.reset()
             a = agent.querysetstate(s)
@@ -69,10 +69,10 @@ if __name__=="__main__":
             ''' Reset Agent '''
             agent.reset()
             
-            print "Batch: " + str(batch) + "\tEpisode: " + str(episode) + "\tResult = " + str(info['Result']) + "\tSteps: " + str(info['Steps'])
+            print "Batch: " + str(batch) + "\tEpisode: " + str(episode) + "\tResult = " + str(info['Result']) + "\tReturn: " + str(info['Return'])
             if r > 0: 
                 wins += 1
-            else:
+            elif r < 0:
                 losses += 1
         
         print "Batch: " + str(batch) + "\tWins: " + str(wins) + "\tLosses: " + str(losses) + "\tRAR: " + str(agent.rar)

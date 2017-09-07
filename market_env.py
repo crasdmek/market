@@ -26,6 +26,7 @@ class Market(gym.Env):
         self.commission = commission
         self.win_loss_pct = win_loss_pct
         self.daily_loss_pct = daily_loss_pct
+        self.total_gain = 0.0
         
         self.observation_space = spaces.Discrete(64)
         
@@ -59,10 +60,10 @@ class Market(gym.Env):
         info = {}
         
         # Default Reward
-        reward = -1.0
+        reward = 0.0
         
         # Set Negative Reward by Daily Loss Percentage * Days since start (data_index + 1)
-        negative_reward = -1.0 * self.daily_loss_pct * (self.data_index + 1)
+        # negative_reward = -1.0 * self.daily_loss_pct * (self.data_index + 1)
         
         # Initialize observations as empty array
         observations = np.empty(0)
@@ -71,34 +72,16 @@ class Market(gym.Env):
         self.data_index += 1  
         
         # Info for Result
-        result = 'L'
+        result = ''
                 
         if self.data_index <= len(self.data) - 1:
             close = float(self.data['Close'][self.data_index])
             #yesterday_close = float(self.data['Close'][self.data_index-1])
-            win_loss_pct = (self.net_value(close) - self.initial_cash)/self.initial_cash
-                
-            # If Gain is Greater Than Gain Target (End and Report Reward)
-            if win_loss_pct >= self.win_loss_pct:
-                self.done = True
-                self.returns = win_loss_pct
-                reward = 1000.0
-                result = 'W'
-                
-            # If Loss is Less Than Loss Target (End and Report Reward)
-            elif win_loss_pct <= -1 * self.win_loss_pct:
-                self.done = True
-                self.returns = win_loss_pct
-                reward = -1000.0
-                
-            # If Negative Reward is Less than Loss Target (End and Report Reward)
-            elif negative_reward <= -1 * self.win_loss_pct:
-                self.done = True
-                self.returns = negative_reward
-                reward = -1000.0
-                
+            #win_loss_pct = (self.net_value(close) - self.initial_cash)/self.initial_cash
+            self.total_gain = self.net_value(close) - self.initial_cash
+            
             # Handle Action
-            elif self.actions[action] == 'LONG':
+            if self.actions[action] == 'LONG':
                 # IF SHORT, Buy back Contracts
                 if self.contracts <= 0:
                     self.cash += self.contracts * close
@@ -138,10 +121,15 @@ class Market(gym.Env):
             
             observations = np.array(observations)
             
-            info = {'Steps': self.data_index, 'Return': self.returns, 'Result': result}
         else:
             self.done = True
-            info = {'Steps': self.data_index}
+            reward = self.total_gain
+            self.returns = self.total_gain
+            if reward > 0:
+                result = 'W'
+            else:
+                result = 'L'
+            info = {'Steps': self.data_index, 'Return': self.returns, 'Result': result}
             observations = np.ones(64)
                                   
         return observations, reward, self.done, info
@@ -161,7 +149,7 @@ class Market(gym.Env):
         self.daily_returns = np.array([])
         self.returns = 0.00
         observation = np.ones(64)
-        numdays = 500
+        numdays = 100
         start = dt.date(1990, 2, 16)
         #end = dt.date(2016, 6, 6)
         #self.start_date = self.random_date(start, end)
