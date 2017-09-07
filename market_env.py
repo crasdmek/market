@@ -27,7 +27,7 @@ class Market(gym.Env):
         self.win_loss_pct = win_loss_pct
         self.daily_loss_pct = daily_loss_pct
         
-        self.observation_space = spaces.Discrete(16)
+        self.observation_space = spaces.Discrete(64)
         
         # Actions
         self.actions = ["LONG", "SHORT", "NEUTRAL"]
@@ -56,15 +56,15 @@ class Market(gym.Env):
             done (boolean): whether the episode has ended, in which case further step() calls will return undefined results
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
         """
-        observation = self.get_observation()
         info = {}
         reward = -1 * self.daily_loss_pct
+        observations = np.empty(0)
         
         self.data_index += 1  
                 
         if self.data_index <= len(self.data) - 1:
             close = float(self.data['Close'][self.data_index])
-            yesterday_close = float(self.data['Close'][self.data_index-1])
+            #yesterday_close = float(self.data['Close'][self.data_index-1])
             win_loss_pct = (self.net_value(close) - self.initial_cash)/self.initial_cash
                 
             if win_loss_pct >= self.win_loss_pct:
@@ -107,14 +107,23 @@ class Market(gym.Env):
             else:
                 pass
             
-            observation = self.get_observation(close, yesterday_close, verbose = 0)
+            #observation = self.get_observation(close, yesterday_close, verbose = 0)
+            # Observe last 4 days
+            for i in range(4):
+                today = float(self.data['Close'][self.data_index-i])
+                yesterday = float(self.data['Close'][self.data_index-i-1])
+                observation = self.get_observation(today, yesterday, verbose = 0)
+                observations = np.append(observations, observation)
+            
+            observations = np.array(observations)
             
             info = {'Steps': self.data_index}
         else:
             self.done = True
             info = {'Steps': self.data_index}
+            observations = np.ones(64)
                                   
-        return observation, reward, self.done, info
+        return observations, reward, self.done, info
     
     def _reset(self):
         """Resets the state of the environment and returns an initial observation.
@@ -123,13 +132,13 @@ class Market(gym.Env):
             space.
         """
         
-        i = random.random()
+        #i = random.random()
         self.done = False
         self.data_index = 0
         self.cash = self.initial_cash
         self.contracts = 0
         self.daily_returns = np.array([])
-        observation = np.array([i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i])
+        observation = np.ones(64)
         numdays = 500
         start = dt.date(1990, 2, 16)
         #end = dt.date(2016, 6, 6)
@@ -155,8 +164,8 @@ class Market(gym.Env):
     
     def get_observation(self, close = 0.00, yesterday_close = 0.00, verbose = 0):
 
-        i = random.random()
-        observation = np.array([i,i,i,i,i,i,i,i,i,i,i,i,i,i,i,i])        
+        #i = random.random()
+        observation = np.ones(16)        
         if self.done == False:
             gain_loss = (close - yesterday_close) * self.contracts
             if yesterday_close > 0:

@@ -33,7 +33,7 @@ if __name__=="__main__":
         dyna = 0, \
         verbose=False)
         
-    batch_cnt = 10
+    batch_cnt = 25
         
     for batch in range(batch_cnt):
         
@@ -44,8 +44,12 @@ if __name__=="__main__":
         S = []
         Q = []
         
+        # Counter for Wins and Losses
+        wins = 0.0
+        losses = 0.0
+        
         ''' Iterate through X Episodes to Train Learner '''
-        for episode in range(5):  
+        for episode in range(100):  
             done = False
             s = env.reset()
             a = agent.querysetstate(s)
@@ -55,6 +59,8 @@ if __name__=="__main__":
                 #cumulative_reward += r
                 a = agent.get_action(s, s_prime, r)
                 s = s_prime
+                
+            #print info
                 
             ''' Retrieve Tables from Agent '''
             s, q = agent.get_q()
@@ -67,6 +73,13 @@ if __name__=="__main__":
             agent.reset()
             
             print "Batch: " + str(batch) + "\tEpisode: " + str(episode) + "\tReward = " + str(r)
+            if r > 0: 
+                wins += 1
+            else:
+                losses += 1
+                
+        print "Batch: " + str(batch) + " Win-Loss Ratio: " + str(wins/losses)
+            
                     
         ''' Convert to Numpy Arrays '''
         S = np.array(S)
