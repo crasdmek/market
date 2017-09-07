@@ -78,6 +78,9 @@ class QLearner(object):
         
     def train(self, x, y, verbose=1):
         self.q_model.train(x, y, verbose)
+        
+    def decrease_rar(self, x):
+        self.rar = self.rar - x
             
 if __name__=="__main__":
     print "Remember Q from Star Trek? Well, this isn't him"

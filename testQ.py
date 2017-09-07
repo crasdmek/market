@@ -36,9 +36,6 @@ if __name__=="__main__":
     batch_cnt = 25
         
     for batch in range(batch_cnt):
-        
-        ''' Slowly Decrease RAR (Random Action Rate) depending on # of Batches '''
-        agent.rar = agent.rar - 1/batch_cnt
             
         ''' Batch Variables for Training an Entire Batch at Once '''
         S = []
@@ -78,7 +75,7 @@ if __name__=="__main__":
             else:
                 losses += 1
                 
-        print "Batch: " + str(batch) + " Win-Loss Ratio: " + str(wins/losses)
+        print "Batch: " + str(batch) + " Win-Loss Ratio: " + str(wins/losses) + " Agent RAR: " + str(agent.rar)
             
                     
         ''' Convert to Numpy Arrays '''
@@ -87,5 +84,8 @@ if __name__=="__main__":
             
         ''' Train Models from Tables '''
         agent.train(S, Q, verbose=1)
+        
+        ''' Slowly Decrease RAR (Random Action Rate) depending on # of Batches '''
+        agent.decrease_rar(1.0/batch_cnt)
 
    
