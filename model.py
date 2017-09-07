@@ -6,7 +6,7 @@ Created on Mon Jul 31 20:17:07 2017
 """
 
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import LSTM, Dense, Activation
 import numpy as np
 
 class Model():
@@ -30,6 +30,12 @@ class Model():
         
         # Input Layer
         self.model.add(Dense(units=64, input_dim=input_dim))
+        self.model.add(Activation('relu'))
+        
+        self.model.add(Dense(units=32))
+        self.model.add(Activation('relu'))
+        
+        self.model.add(Dense(units=16))
         self.model.add(Activation('relu'))
         
         # Output Layer
