@@ -60,7 +60,7 @@ class QLearner(object):
         for i in range(self.num_actions):
             Q[i-1] = self.q_model.predict([s])[0][i-1]
             
-        # Replace Q for Given Action with Updated Q Value
+        # Replace Q for Given Action a with Updated Q Value q
         Q[a] = q
         
         # Append New Q Values to Q Lists        

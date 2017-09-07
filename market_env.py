@@ -57,9 +57,14 @@ class Market(gym.Env):
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
         """
         info = {}
-        reward = -1 * self.daily_loss_pct
+        
+        # Set Negative Reward by Daily Loss Percentage * Days since start (data_index + 1)
+        reward = -1 * self.daily_loss_pct * (self.data_index + 1)
+        
+        # Initialize observations as empty array
         observations = np.empty(0)
         
+        # Increment Data Index
         self.data_index += 1  
                 
         if self.data_index <= len(self.data) - 1:
@@ -67,10 +72,12 @@ class Market(gym.Env):
             #yesterday_close = float(self.data['Close'][self.data_index-1])
             win_loss_pct = (self.net_value(close) - self.initial_cash)/self.initial_cash
                 
+            # If Gain is Greater Than Gain Target (End and Report Reward)
             if win_loss_pct >= self.win_loss_pct:
                 self.done = True
                 reward = win_loss_pct
                 
+            # If Gain is Less Than Loss Target (End and Report Reward)
             elif win_loss_pct <= -1 * self.win_loss_pct:
                 self.done = True
                 reward = win_loss_pct
@@ -101,7 +108,6 @@ class Market(gym.Env):
                 elif self.contracts < 0:
                     self.cash += self.contracts * close - self.commission
                     self.contracts = 0
-                # Else do nothing
                 else:
                     pass
             else:
