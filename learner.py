@@ -64,8 +64,11 @@ class QLearner(object):
         Q[a] = q
         
         # Append New Q Values to Q Lists        
-        self.q_states.append(s)
-        self.q_qs.append(Q)
+        #self.q_states.append(s)
+        #self.q_qs.append(Q)
+        s = s.reshape(1,64)
+        Q = Q.reshape(1,3)
+        self.train(s, Q)
                 
     def get_q(self):
         return self.q_states, self.q_qs
@@ -76,8 +79,8 @@ class QLearner(object):
         self.s = 0
         self.a = 0   
         
-    def train(self, x, y, verbose=1):
-        self.q_model.train(x, y, verbose)
+    def train(self, x, y):
+        self.q_model.train(x, y)
         
     def decrease_rar(self, x):
         self.rar = self.rar - x

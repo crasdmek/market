@@ -41,8 +41,8 @@ if __name__=="__main__":
     for batch in range(batch_cnt):
             
         ''' Batch Variables for Training an Entire Batch at Once '''
-        S = []
-        Q = []
+        #S = []
+        #Q = []
         
         # Counter for Wins and Losses
         wins = 0
@@ -63,11 +63,11 @@ if __name__=="__main__":
             #print info
                 
             ''' Retrieve Tables from Agent '''
-            s, q = agent.get_q()
+            # s, q = agent.get_q()
             
             ''' Add New Data to S, Q '''
-            S = S + s
-            Q = Q + q
+            # S = S + s
+            # Q = Q + q
             
             ''' Reset Agent '''
             agent.reset()
@@ -82,11 +82,11 @@ if __name__=="__main__":
             
                     
         ''' Convert to Numpy Arrays '''
-        S = np.array(S)
-        Q = np.array(Q)
+        #S = np.array(S)
+        #Q = np.array(Q)
             
         ''' Train Models from Tables '''
-        agent.train(S, Q, verbose=1)
+        # agent.train(S, Q)
         
         ''' Slowly Decrease RAR (Random Action Rate) depending on # of Batches '''
         agent.decrease_rar(1.0/batch_cnt)

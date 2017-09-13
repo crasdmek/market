@@ -75,6 +75,7 @@ class Market(gym.Env):
         result = ''
                 
         if self.data_index <= len(self.data) - 1:
+            
             close = float(self.data['Close'][self.data_index])
             #yesterday_close = float(self.data['Close'][self.data_index-1])
             #win_loss_pct = (self.net_value(close) - self.initial_cash)/self.initial_cash

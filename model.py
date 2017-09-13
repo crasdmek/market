@@ -13,8 +13,8 @@ class Model():
     def __init__(self, input_dim=1, output_dim=1):
         self.build_model(input_dim, output_dim)
     
-    def train(self, x, y, verbose=1):
-        self.model.fit(x, y, verbose, epochs=1)
+    def train(self, x, y):
+        self.model.fit(x, y, verbose=0, epochs=1)
     
     def predict(self, x, verbose=False):
         x = np.array(x)
