@@ -18,14 +18,16 @@ class Market(gym.Env):
 
     def __init__(self, initial_cash = 10000, 
                  commission = 9.99, 
-                 win_loss_pct = .12,
-                 daily_loss_pct = .05/252):
+                 start_date=dt.date(1990, 2, 16),
+                 end_date=dt.date(1990, 12, 31)):
         
         # Data Initialization Attributes
         self.initial_cash = initial_cash
         self.commission = commission
-        self.win_loss_pct = win_loss_pct
-        self.daily_loss_pct = daily_loss_pct
+        self.start_date = start_date
+        self.end_date = end_date
+        #self.win_loss_pct = win_loss_pct
+        #self.daily_loss_pct = daily_loss_pct
         self.total_gain = 0.0
         
         self.observation_space = spaces.Discrete(64)
@@ -150,13 +152,13 @@ class Market(gym.Env):
         self.daily_returns = np.array([])
         self.returns = 0.00
         observation = np.ones(64)
-        numdays = 100
-        start = dt.date(1990, 2, 16)
+        #numdays = 100
+        #start = dt.date(1990, 2, 16)
         #end = dt.date(2016, 6, 6)
         #self.start_date = self.random_date(start, end)
-        self.start_date = start
-        end_date = self.start_date + dt.timedelta(days=numdays)
-        self.data = self.master_data.loc[self.start_date:end_date]
+        #self.start_date = start
+        #end_date = self.start_date + dt.timedelta(days=numdays)
+        self.data = self.master_data.loc[self.start_date:self.end_date]
         return observation
 
     
