@@ -9,7 +9,7 @@ from keras.optimizers import Adam
 from keras.models import Sequential
 from market_env import Market
 
-EPISODES = 1000
+EPISODES = 10000
 
 
 # DQN Agent for the Cartpole
@@ -29,7 +29,7 @@ class DQNAgent:
         self.discount_factor = 0.99
         self.learning_rate = 0.001
         self.epsilon = 1.0
-        self.epsilon_decay = 0.9999
+        self.epsilon_decay = 0.99999
         self.epsilon_min = 0.01
         self.batch_size = 64
         self.train_start = 1000
@@ -44,7 +44,7 @@ class DQNAgent:
         self.update_target_model()
 
         if self.load_model:
-            self.model.load_weights("./save_model/cartpole_dqn.h5")
+            self.model.load_weights("./save_model/market_dqn.h5")
 
     # approximate Q function using Neural Network
     # state is input and Q Value of each action is output of network

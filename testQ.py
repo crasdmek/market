@@ -36,7 +36,7 @@ if __name__=="__main__":
         # GAMMA = discount factor, higher tends toward longer term rewards
         # ALPHA = learning rate, higher tends toward deterministic
         
-    batch_cnt = 100
+    batch_cnt = 10
         
     for batch in range(batch_cnt):
             
