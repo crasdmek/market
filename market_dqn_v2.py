@@ -26,7 +26,7 @@ class DQNAgent:
         # These are hyper parameters for the DQN
         self.discount_factor = 0.99
         self.learning_rate = 0.001
-        self.epsilon = 1.0
+        self.epsilon = epsilon
         self.epsilon_decay = 0.99999
         self.epsilon_min = 0.00
         self.batch_size = 64
@@ -121,7 +121,7 @@ if __name__ == "__main__":
                          commission = 9.99, 
                          start_date=dt.date(1990, 2, 16),
                          end_date=dt.date(1990, 6, 30))
-            EPISODES = 7000
+            EPISODES = 5000
                          
         else: # Testing Stage
             env = Market(initial_cash = 10000, 
