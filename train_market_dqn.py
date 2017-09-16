@@ -13,7 +13,7 @@ import numpy as np
 
 if __name__ == "__main__":
     
-    EPISODES = 4000
+    EPISODES = 1000
     
     # MARKET_ENV VARIABLES
     INITIAL_CASH = 10000
@@ -22,8 +22,8 @@ if __name__ == "__main__":
     END_DATE = dt.date(1990, 4, 30)
     
     # MARKET_DQN VARIABLES
-    LOAD_MODEL = False
-    EPSILON=1.0
+    LOAD_MODEL = True
+    EPSILON=.1
     DISCOUNT_FACTOR = 0.99
     LEARNING_RATE = 0.001
     EPSILON_DECAY = 0.99999
