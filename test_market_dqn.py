@@ -36,7 +36,7 @@ if __name__ == "__main__":
         
         # INITIALIZE MARKET_ENV
         START_DATE = dt.date(1990+e, 2, 16)
-        END_DATE = dt.date(1990+e, 4, 30)
+        END_DATE = dt.date(1990+e, 6, 30)
         
         env = Market(initial_cash = INITIAL_CASH, 
                      commission = COMMISSION, 
@@ -89,8 +89,8 @@ if __name__ == "__main__":
                 # every episode, plot the play time
                 scores.append(score)
                 episodes.append(e)
-                pylab.plot(episodes, scores, 'b')
-                pylab.savefig("./save_graph/market_dqn.png")
+                #pylab.plot(episodes, scores, 'b')
+                #pylab.savefig("./save_graph/market_dqn.png")
                 print("start_date:", START_DATE, "  score:", score, "  memory length:",
                       len(agent.memory), "  epsilon:", agent.epsilon)
 

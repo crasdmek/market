@@ -13,17 +13,18 @@ import numpy as np
 
 if __name__ == "__main__":
     
-    EPISODES = 1000
+    EPISODES = 7000
+    MAX_SCORE = -999
     
     # MARKET_ENV VARIABLES
     INITIAL_CASH = 10000
     COMMISSION = 9.99
     START_DATE = dt.date(1990, 2, 16)
-    END_DATE = dt.date(1990, 4, 30)
+    END_DATE = dt.date(1990, 6, 30)
     
     # MARKET_DQN VARIABLES
-    LOAD_MODEL = True
-    EPSILON=.1
+    LOAD_MODEL = False
+    EPSILON=1
     DISCOUNT_FACTOR = 0.99
     LEARNING_RATE = 0.001
     EPSILON_DECAY = 0.99999
@@ -91,9 +92,11 @@ if __name__ == "__main__":
                 #pylab.savefig("./save_graph/market_dqn.png")
                 print("episode:", e, "  score:", score, "  memory length:",
                       len(agent.memory), "  epsilon:", agent.epsilon)
-
+		if score > MAX_SCORE:
+			MAX_SCORE = score
 
         # save the model
         if e % 50 == 0:
             agent.model.save_weights("./save_model/market_dqn.h5")
-            
+
+    print("max score:", MAX_SCORE)            
