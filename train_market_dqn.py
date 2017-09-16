@@ -10,6 +10,9 @@ import datetime as dt
 import pylab
 from market_dqn import DQNAgent
 import numpy as np
+import matplotlib
+
+matplotlib.use('Agg')
 
 if __name__ == "__main__":
     
