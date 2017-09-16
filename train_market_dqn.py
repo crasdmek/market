@@ -10,9 +10,6 @@ import datetime as dt
 import pylab
 from market_dqn import DQNAgent
 import numpy as np
-import matplotlib
-
-matplotlib.use('Agg')
 
 if __name__ == "__main__":
     
@@ -90,8 +87,8 @@ if __name__ == "__main__":
                 # every episode, plot the play time
                 scores.append(score)
                 episodes.append(e)
-                pylab.plot(episodes, scores, 'b')
-                pylab.savefig("./save_graph/market_dqn.png")
+                #pylab.plot(episodes, scores, 'b')
+                #pylab.savefig("./save_graph/market_dqn.png")
                 print("episode:", e, "  score:", score, "  memory length:",
                       len(agent.memory), "  epsilon:", agent.epsilon)
 
