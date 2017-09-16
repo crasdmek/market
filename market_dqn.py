@@ -1,40 +1,37 @@
-import sys
-import gym
-import pylab
 import random
 import numpy as np
 from collections import deque
 from keras.layers import Dense
 from keras.optimizers import Adam
 from keras.models import Sequential
-from market_env import Market
-
-EPISODES = 7000
 
 
 # DQN Agent for the Cartpole
 # it uses Neural Network to approximate q function
 # and replay memory & target q network
 class DQNAgent:
-    def __init__(self, state_size, action_size):
+    def __init__(self, state_size, action_size, load_model, discount_factor,
+                 learning_rate, epsilon, epsilon_decay, epsilon_min, batch_size,
+                 train_start, memory_size):
         # if you want to see Cartpole learning, then change to True
         self.render = False
-        self.load_model = False
+        self.load_model = load_model
 
         # get size of state and action
         self.state_size = state_size
         self.action_size = action_size
 
         # These are hyper parameters for the DQN
-        self.discount_factor = 0.99
-        self.learning_rate = 0.001
-        self.epsilon = 1.0
-        self.epsilon_decay = 0.99999
-        self.epsilon_min = 0.00
-        self.batch_size = 64
-        self.train_start = 1000
+        self.discount_factor = discount_factor
+        self.learning_rate = learning_rate
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
+        self.epsilon_min = epsilon_min
+        self.batch_size = batch_size
+        self.train_start = train_start
+        
         # create replay memory using deque
-        self.memory = deque(maxlen=4000)
+        self.memory = deque(maxlen=memory_size)
 
         # create main model and target model
         self.model = self.build_model()
@@ -112,65 +109,3 @@ class DQNAgent:
                        epochs=1, verbose=0)
 
 
-if __name__ == "__main__":
-    # In case of CartPole-v1, maximum length of episode is 500
-    # env = gym.make('CartPole-v1')
-    env = Market(initial_cash = 10000, 
-             commission = 9.99, 
-             win_loss_pct = .12,
-             daily_loss_pct = .24/252)
-    # get size of state and action from environment
-    # state_size = env.observation_space.shape[0]
-    state_size = env.observation_space.n
-    action_size = env.action_space.n
-
-    agent = DQNAgent(state_size, action_size)
-
-    scores, episodes = [], []
-
-    for e in range(EPISODES):
-        done = False
-        score = 0
-        state = env.reset()
-        state = np.reshape(state, [1, state_size])
-
-        while not done:
-            if agent.render:
-                env.render()
-
-            # get action for the current state and go one step in environment
-            action = agent.get_action(state)
-            next_state, reward, done, info = env.step(action)
-            next_state = np.reshape(next_state, [1, state_size])
-            # if an action make the episode end, then gives penalty of -100
-            #reward = reward if not done or score == 499 else -100
-
-            # save the sample <s, a, r, s'> to the replay memory
-            agent.append_sample(state, action, reward, next_state, done)
-            # every time step do the training
-            agent.train_model()
-            score += reward
-            state = next_state
-
-            if done:
-                # every episode update the target model to be same with model
-                agent.update_target_model()
-
-                # every episode, plot the play time
-                score = score if score == 500 else score + 100
-                scores.append(score)
-                episodes.append(e)
-                pylab.plot(episodes, scores, 'b')
-                #pylab.savefig("./save_graph/market_dqn.png")
-                print("episode:", e, "  score:", score, "  memory length:",
-                      len(agent.memory), "  epsilon:", agent.epsilon)
-
-                # if the mean of scores of last 10 episode is bigger than 490
-                # stop training
-                #if np.mean(scores[-min(10, len(scores)):]) > 490:
-                #    sys.exit()
-
-        # save the model
-        if e % 50 == 0:
-            agent.model.save_weights("./save_model/market_dqn.h5")
-            
