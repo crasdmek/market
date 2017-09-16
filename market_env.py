@@ -26,8 +26,6 @@ class Market(gym.Env):
         self.commission = commission
         self.start_date = start_date
         self.end_date = end_date
-        #self.win_loss_pct = win_loss_pct
-        #self.daily_loss_pct = daily_loss_pct
         self.total_gain = 0.0
         
         self.observation_space = spaces.Discrete(64)
@@ -79,8 +77,6 @@ class Market(gym.Env):
         if self.data_index <= len(self.data) - 1:
             
             close = float(self.data['Close'][self.data_index])
-            #yesterday_close = float(self.data['Close'][self.data_index-1])
-            #win_loss_pct = (self.net_value(close) - self.initial_cash)/self.initial_cash
             self.total_gain = self.net_value(close) - self.initial_cash
             
             # Handle Action
@@ -144,7 +140,6 @@ class Market(gym.Env):
             space.
         """
         
-        #i = random.random()
         self.done = False
         self.data_index = 0
         self.cash = self.initial_cash
@@ -152,12 +147,6 @@ class Market(gym.Env):
         self.daily_returns = np.array([])
         self.returns = 0.00
         observation = np.ones(64)
-        #numdays = 100
-        #start = dt.date(1990, 2, 16)
-        #end = dt.date(2016, 6, 6)
-        #self.start_date = self.random_date(start, end)
-        #self.start_date = start
-        #end_date = self.start_date + dt.timedelta(days=numdays)
         self.data = self.master_data.loc[self.start_date:self.end_date]
         return observation
 
@@ -177,7 +166,6 @@ class Market(gym.Env):
     
     def get_observation(self, close = 0.00, yesterday_close = 0.00, verbose = 0):
 
-        #i = random.random()
         observation = np.ones(16)        
         if self.done == False:
             gain_loss = (close - yesterday_close) * self.contracts

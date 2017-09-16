@@ -13,17 +13,15 @@ import numpy as np
 
 if __name__ == "__main__":
     
-    EPISODES = 4000
+    EPISODES = 20
     
     # MARKET_ENV VARIABLES
     INITIAL_CASH = 10000
     COMMISSION = 9.99
-    START_DATE = dt.date(1990, 2, 16)
-    END_DATE = dt.date(1990, 4, 30)
     
     # MARKET_DQN VARIABLES
-    LOAD_MODEL = False
-    EPSILON=1.0
+    LOAD_MODEL = True
+    EPSILON=0.00
     DISCOUNT_FACTOR = 0.99
     LEARNING_RATE = 0.001
     EPSILON_DECAY = 0.99999
@@ -31,33 +29,37 @@ if __name__ == "__main__":
     BATCH_SIZE = 64
     TRAIN_START = 1000
     MEMORY_SIZE = 4000
-    
-    # INITIALIZE MARKET_ENV
-    env = Market(initial_cash = INITIAL_CASH, 
-                 commission = COMMISSION, 
-                 start_date = START_DATE,
-                 end_date = END_DATE)
-                     
-    # get size of state and action from environment
-    STATE_SIZE = env.observation_space.n
-    ACTION_SIZE = env.action_space.n
-
-    # INITIALIZE DQNAgent
-    agent = DQNAgent(state_size = STATE_SIZE, 
-                     action_size = ACTION_SIZE,
-                     load_model = LOAD_MODEL, 
-                     discount_factor = DISCOUNT_FACTOR,
-                     learning_rate = LEARNING_RATE, 
-                     epsilon = EPSILON, 
-                     epsilon_decay = EPSILON_DECAY, 
-                     epsilon_min = EPSILON_MIN,
-                     batch_size = BATCH_SIZE,
-                     train_start = TRAIN_START, 
-                     memory_size = MEMORY_SIZE)
 
     scores, episodes = [], []
 
     for e in range(EPISODES):
+        
+        # INITIALIZE MARKET_ENV
+        START_DATE = dt.date(1990+e, 2, 16)
+        END_DATE = dt.date(1990+e, 4, 30)
+        
+        env = Market(initial_cash = INITIAL_CASH, 
+                     commission = COMMISSION, 
+                     start_date = START_DATE,
+                     end_date = END_DATE)
+                         
+        # get size of state and action from environment
+        STATE_SIZE = env.observation_space.n
+        ACTION_SIZE = env.action_space.n
+    
+        # INITIALIZE DQNAgent
+        agent = DQNAgent(state_size = STATE_SIZE, 
+                         action_size = ACTION_SIZE,
+                         load_model = LOAD_MODEL, 
+                         discount_factor = DISCOUNT_FACTOR,
+                         learning_rate = LEARNING_RATE, 
+                         epsilon = EPSILON, 
+                         epsilon_decay = EPSILON_DECAY, 
+                         epsilon_min = EPSILON_MIN,
+                         batch_size = BATCH_SIZE,
+                         train_start = TRAIN_START, 
+                         memory_size = MEMORY_SIZE)
+    
         done = False
         score = 0
         state = env.reset()
@@ -89,7 +91,7 @@ if __name__ == "__main__":
                 episodes.append(e)
                 pylab.plot(episodes, scores, 'b')
                 pylab.savefig("./save_graph/market_dqn.png")
-                print("episode:", e, "  score:", score, "  memory length:",
+                print("start_date:", START_DATE, "  score:", score, "  memory length:",
                       len(agent.memory), "  epsilon:", agent.epsilon)
 
 
