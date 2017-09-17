@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # MARKET_DQN VARIABLES
     LOAD_MODEL = False
     EPSILON=1
-    DISCOUNT_FACTOR = 0.99
+    DISCOUNT_FACTOR = 0.75
     LEARNING_RATE = 0.001
     EPSILON_DECAY = 0.99999
     EPSILON_MIN = 0.00
