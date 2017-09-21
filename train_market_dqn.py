@@ -13,7 +13,7 @@ import numpy as np
 
 if __name__ == "__main__":
     
-    EPISODES = 7000
+    EPISODES = 5000
     MAX_SCORE = -999
     
     # MARKET_ENV VARIABLES
@@ -25,13 +25,13 @@ if __name__ == "__main__":
     # MARKET_DQN VARIABLES
     LOAD_MODEL = False
     EPSILON=1
-    DISCOUNT_FACTOR = 0.75
+    DISCOUNT_FACTOR = 0.5
     LEARNING_RATE = 0.001
     EPSILON_DECAY = 0.99999
     EPSILON_MIN = 0.00
     BATCH_SIZE = 64
     TRAIN_START = 1000
-    MEMORY_SIZE = 4000
+    MEMORY_SIZE = 1000
     
     # INITIALIZE MARKET_ENV
     env = Market(initial_cash = INITIAL_CASH, 
@@ -88,8 +88,8 @@ if __name__ == "__main__":
                 # every episode, plot the play time
                 scores.append(score)
                 episodes.append(e)
-                #pylab.plot(episodes, scores, 'b')
-                #pylab.savefig("./save_graph/market_dqn.png")
+                pylab.plot(episodes, scores, 'b')
+                pylab.savefig("./save_graph/market_dqn.png")
                 print("episode:", e, "  score:", score, "  memory length:",
                       len(agent.memory), "  epsilon:", agent.epsilon)
 		if score > MAX_SCORE:
