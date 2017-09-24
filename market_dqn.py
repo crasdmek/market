@@ -47,9 +47,9 @@ class DQNAgent:
     # state is input and Q Value of each action is output of network
     def build_model(self):
         model = Sequential()
-        model.add(Dense(24, input_dim=self.state_size, activation='relu',
+        model.add(Dense(int(self.state_size * .75), input_dim=self.state_size, activation='relu',
                         kernel_initializer='he_uniform'))
-        model.add(Dense(24, activation='relu',
+        model.add(Dense(int(self.state_size * .75), activation='relu',
                         kernel_initializer='he_uniform'))
        	model.add(Dense(self.action_size, activation='linear',
                         kernel_initializer='he_uniform'))

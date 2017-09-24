@@ -29,6 +29,7 @@ if __name__ == "__main__":
     BATCH_SIZE = 64
     TRAIN_START = 1000
     MEMORY_SIZE = 4000
+    WINDOW = 2
 
     scores, episodes = [], []
 
@@ -41,7 +42,8 @@ if __name__ == "__main__":
         env = Market(initial_cash = INITIAL_CASH, 
                      commission = COMMISSION, 
                      start_date = START_DATE,
-                     end_date = END_DATE)
+                     end_date = END_DATE,
+                     window=WINDOW)
                          
         # get size of state and action from environment
         STATE_SIZE = env.observation_space.n
@@ -89,8 +91,8 @@ if __name__ == "__main__":
                 # every episode, plot the play time
                 scores.append(score)
                 episodes.append(e)
-                #pylab.plot(episodes, scores, 'b')
-                #pylab.savefig("./save_graph/market_dqn.png")
+                pylab.plot(episodes, scores, 'b')
+                pylab.savefig("./save_graph/market_dqn.png")
                 print("start_date:", START_DATE, "  score:", score, "  memory length:",
                       len(agent.memory), "  epsilon:", agent.epsilon)
 

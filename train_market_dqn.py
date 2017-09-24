@@ -25,19 +25,21 @@ if __name__ == "__main__":
     # MARKET_DQN VARIABLES
     LOAD_MODEL = False
     EPSILON=1
-    DISCOUNT_FACTOR = 0.5
+    DISCOUNT_FACTOR = 0.75
     LEARNING_RATE = 0.001
     EPSILON_DECAY = 0.99999
     EPSILON_MIN = 0.00
     BATCH_SIZE = 64
     TRAIN_START = 1000
-    MEMORY_SIZE = 1000
+    MEMORY_SIZE = 4000
+    WINDOW = 2
     
     # INITIALIZE MARKET_ENV
     env = Market(initial_cash = INITIAL_CASH, 
                  commission = COMMISSION, 
                  start_date = START_DATE,
-                 end_date = END_DATE)
+                 end_date = END_DATE,
+                 window=WINDOW)
                      
     # get size of state and action from environment
     STATE_SIZE = env.observation_space.n

@@ -19,7 +19,8 @@ class Market(gym.Env):
     def __init__(self, initial_cash = 10000, 
                  commission = 9.99, 
                  start_date=dt.date(1990, 2, 16),
-                 end_date=dt.date(1990, 12, 31)):
+                 end_date=dt.date(1990, 12, 31),
+                 window=4):
         
         # Data Initialization Attributes
         self.initial_cash = initial_cash
@@ -27,8 +28,10 @@ class Market(gym.Env):
         self.start_date = start_date
         self.end_date = end_date
         self.total_gain = 0.0
+        self.window = window
+        self.obs_count = 16
         
-        self.observation_space = spaces.Discrete(64)
+        self.observation_space = spaces.Discrete(self.obs_count * self.window)
         
         # Actions
         self.actions = ["LONG", "SHORT", "NEUTRAL"]
@@ -112,7 +115,7 @@ class Market(gym.Env):
             
             #observation = self.get_observation(close, yesterday_close, verbose = 0)
             # Observe last 4 days
-            for i in range(4):
+            for i in range(self.window):
                 today = float(self.data['Close'][self.data_index-i])
                 yesterday = float(self.data['Close'][self.data_index-i-1])
                 observation = self.get_observation(today, yesterday, verbose = 0)
@@ -129,7 +132,7 @@ class Market(gym.Env):
             else:
                 result = 'L'
             info = {'Steps': self.data_index, 'Return': self.returns, 'Result': result}
-            observations = np.ones(64)
+            observations = np.ones(self.obs_count * self.window)
                                   
         return observations, reward, self.done, info
     
@@ -146,7 +149,7 @@ class Market(gym.Env):
         self.contracts = 0
         self.daily_returns = np.array([])
         self.returns = 0.00
-        observation = np.ones(64)
+        observation = np.ones(self.obs_count * self.window)
         self.data = self.master_data.loc[self.start_date:self.end_date]
         return observation
 
@@ -166,7 +169,7 @@ class Market(gym.Env):
     
     def get_observation(self, close = 0.00, yesterday_close = 0.00, verbose = 0):
 
-        observation = np.ones(16)        
+        observation = np.ones(self.obs_count)        
         if self.done == False:
             gain_loss = (close - yesterday_close) * self.contracts
             if yesterday_close > 0:
